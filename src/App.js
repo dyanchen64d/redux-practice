@@ -4,20 +4,30 @@ import './App.css';
 import Auth from './components/Auth';
 import Layout from './components/Layout';
 import Notification from './components/Notification';
-import { sendCartData } from './store/cart-actions';
+import { fetchCartData, sendCartData } from './store/cart-actions';
+
+let isFirstRender = true;
 
 function App() {
   const { isLoggedIn } = useSelector((state) => state.auth);
 
-  const { itemsList } = useSelector((state) => state.cart);
+  const cart = useSelector((state) => state.cart);
 
   const { notification } = useSelector((state) => state.ui);
 
   const dispatch = useDispatch();
 
   useEffect(() => {
-    dispatch(sendCartData(itemsList));
-  }, [itemsList, dispatch]);
+    if (isFirstRender) {
+      isFirstRender = false;
+    } else {
+      dispatch(sendCartData(cart));
+    }
+  }, [cart, dispatch]);
+
+  useEffect(() => {
+    dispatch(fetchCartData());
+  }, [dispatch]);
 
   return (
     <div className="App">
