@@ -26,12 +26,25 @@ const cartSlice = createSlice({
           name: newItem.name,
         });
       }
+
+      state.totalQuantity++;
     },
-    removeFromCart: () => {
-      //
+    removeFromCart: (state, action) => {
+      const id = action.payload;
+
+      const existed = state.itemsList.find((item) => item.id === id);
+
+      if (existed.quantity === 1) {
+        state.itemsList = state.itemsList.filter((item) => item.id !== id);
+      } else {
+        existed.quantity = existed.quantity - 1;
+        existed.totalPrice = existed.totalPrice - existed.price;
+      }
+
+      state.totalQuantity--;
     },
     setShowCart: (state) => {
-      state.showCart = true;
+      state.showCart = !state.showCart;
     },
   },
 });
